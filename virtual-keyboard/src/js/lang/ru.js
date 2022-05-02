@@ -214,11 +214,11 @@ export default [
     shift: null,
     code: 'ShiftLeft',
   },
-  {
+/*   {
     key: '/',
     shift: '|',
     code: 'IntlBackslash',
-  },
+  }, */
   {
     key: 'я',
     shift: 'Я',
