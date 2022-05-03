@@ -49,14 +49,25 @@ export default class Keyboard {
     if (type.match(/keydown|mousedown/)) {
       if (type.match(/key/)) event.preventDefault();
       keyObject.keyContainer.classList.add('active');
-
+      if (code.match(/Shift/)) this.shiftKey = true;
       if (code.match(/Control/)) this.ctrlKey = true;
       if (code.match(/Alt/)) this.altKey = true;
       if (code.match(/Control/) && this.altKey) this.changeLang();
       if (code.match(/Alt/) && this.ctrlKey) this.changeLang();
 
+      if (!this.isCaps) {
+        this.printToDisplay(keyObject, this.shiftKey ? keyObject.shift : keyObject.key);
+      } else if (this.isCaps) {
+        if (this.shiftKey) {
+          this.printToDisplay(keyObject, keyObject.keyShift.innerHTML ? keyObject.shift : keyObject.key);
+        } else {
+          this.printToDisplay(keyObject, !keyObject.keyShift.innerHTML ? keyObject.shift : keyObject.key);
+        }
+      }
+
     } else if (type.match(/keyup|mouseup/)) {
       keyObject.keyContainer.classList.remove('active');
+      if (code.match(/Shift/)) this.shiftKey = false;
       if (code.match(/Control/)) this.ctrlKey = false;
       if (code.match(/Alt/)) this.altKey = false;
     }
@@ -82,5 +93,55 @@ export default class Keyboard {
       }
       item.keyTitle.innerHTML = keyObject.key;
     });
+  }
+
+  printToDisplay(keyObject, symbol) {
+    let cursorPosition = this.display.selectionStart;
+    const left = this.display.value.slice(0, cursorPosition);
+    const right = this.display.value.slice(cursorPosition);
+
+    const fnButtonsHandler = {
+      Tab: () => {
+        this.display.value = `${left}\t${right}`;
+        cursorPosition += 1;
+      },
+      ArrowLeft: () => {
+        cursorPosition = cursorPosition - 1 >= 0 ? cursorPosition - 1 : 0;
+      },
+      ArrowRight: () => {
+        cursorPosition += 1;
+      },
+      ArrowUp: () => {
+        const positionFromLeft = this.display.value.slice(0, cursorPosition).match(/(\n).*$(?!\1)/g) || [[1]];
+        cursorPosition -= positionFromLeft[0].length;
+      },
+      ArrowDown: () => {
+        const positionFromLeft = this.display.value.slice(cursorPosition).match(/^.*(\n).*(?!\1)/) || [[1]];
+        cursorPosition += positionFromLeft[0].length;
+      },
+      Enter: () => {
+        this.display.value = `${left}\n${right}`;
+        cursorPosition += 1;
+      },
+      Delete: () => {
+        this.display.value = `${left}${right.slice(1)}`;
+      },
+      Backspace: () => {
+        this.display.value = `${left.slice(0, -1)}${right}`;
+        cursorPos -= 1;
+      },
+      Space: () => {
+        this.display.value = `${left} ${right}`;
+        cursorPos += 1;
+      }
+    }
+
+    if (fnButtonsHandler[keyObject.code]) {
+      fnButtonsHandler[keyObject.code]();
+    } else if (!keyObject.isFnKey) {
+      cursorPosition += 1;
+      this.display.value = `${left}${symbol || ''}${right}`;
+    }
+    this.display.setSelectionRange(cursorPosition, cursorPosition);
   }
 }
