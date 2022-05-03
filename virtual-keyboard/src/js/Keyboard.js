@@ -50,6 +50,17 @@ export default class Keyboard {
       if (type.match(/key/)) event.preventDefault();
       keyObject.keyContainer.classList.add('active');
       if (code.match(/Shift/)) this.shiftKey = true;
+      if (this.shiftKey) this.switchUpperCase(true);
+      // Caps
+      if (code.match(/Caps/) && !this.isCaps) {
+        this.isCaps = true;
+        this.switchUpperCase(true);
+      } else if (code.match(/Caps/) && this.isCaps) {
+        this.isCaps = false;
+        this.switchUpperCase(false);
+        keyObject.keyContainer.classList.remove('active');
+      }
+      // Change language
       if (code.match(/Control/)) this.ctrlKey = true;
       if (code.match(/Alt/)) this.altKey = true;
       if (code.match(/Control/) && this.altKey) this.changeLang();
@@ -66,10 +77,15 @@ export default class Keyboard {
       }
 
     } else if (type.match(/keyup|mouseup/)) {
-      keyObject.keyContainer.classList.remove('active');
-      if (code.match(/Shift/)) this.shiftKey = false;
+      // keyObject.keyContainer.classList.remove('active');
+      if (code.match(/Shift/)) {
+        this.shiftKey = false;
+        this.switchUpperCase(false);
+      }
       if (code.match(/Control/)) this.ctrlKey = false;
       if (code.match(/Alt/)) this.altKey = false;
+
+      if (!code.match(/Caps/)) keyObject.keyContainer.classList.remove('active');
     }
   }
 
@@ -93,6 +109,45 @@ export default class Keyboard {
       }
       item.keyTitle.innerHTML = keyObject.key;
     });
+    if (this.isCaps) this.switchUpperCase(true);
+  }
+
+  switchUpperCase(isTrue) {
+    if (isTrue) {
+      this.keyButtons.forEach(button => {
+        if (button.keyShift) {
+          if (this.shiftKey) {
+            button.keyShift.classList.add('key-shift_active');
+            button.keyTitle.classList.add('key-shift_inactive');
+          }
+        }
+        if (!button.isFnKey && this.isCaps && !this.shiftKey && !button.keyShift.innerHTML) {
+          button.keyTitle.innerHTML = button.shift;
+        } else if (!button.isFnKey && this.isCaps && this.shiftKey) {
+          button.keyTitle.innerHTML = button.key;
+        } else if (!button.isFnKey && !button.keyShift.innerHTML) {
+          button.keyTitle.innerHTML = button.shift;
+        }
+      });
+    } else {
+      this.keyButtons.forEach(button => {
+        if (button.keyShift.innerHTML && !button.isFnKey) {
+          button.keyShift.classList.remove('key-shift_active');
+          button.keyTitle.classList.remove('key-shift_inactive');
+          if (!this.isCaps) {
+            button.keyTitle.innerHTML = button.key;
+          } else if (!this.isCaps) {
+            button.keyTitle.innerHTML = button.shift;
+          }
+        } else if (!button.isFnKey) {
+          if (this.isCaps) {
+            button.keyTitle.innerHTML = button.shift;
+          } else {
+            button.keyTitle.innerHTML = button.key;
+          }
+        }
+      });
+    }
   }
 
   printToDisplay(keyObject, symbol) {
@@ -128,11 +183,11 @@ export default class Keyboard {
       },
       Backspace: () => {
         this.display.value = `${left.slice(0, -1)}${right}`;
-        cursorPos -= 1;
+        cursorPosition -= 1;
       },
       Space: () => {
         this.display.value = `${left} ${right}`;
-        cursorPos += 1;
+        cursorPosition += 1;
       }
     }
 
