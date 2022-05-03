@@ -1,4 +1,4 @@
-const webpack = require('webpack');
+// const webpack = require('webpack');
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -19,15 +19,15 @@ module.exports = (env, options) => {
       rules: [
         {
           test: /\.css$/i,
-          use: ["style-loader", "css-loader"],
-        }
-      ]
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
     },
 
     plugins: [
       new CleanWebpackPlugin(),
-    ]
-  }
+    ],
+  };
 
   return config;
-}
+};

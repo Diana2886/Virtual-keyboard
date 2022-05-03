@@ -14,10 +14,15 @@ export default class Keyboard {
 
   init(langCode) {
     this.keyBase = lang[langCode];
-    this.display = createDomNode('textarea', 'display', null, wrapper,
+    this.display = createDomNode(
+      'textarea',
+      'display',
+      null,
+      wrapper,
       ['placeholder', 'Hello!\nThe keyboard was created in the Windows OS\nUse the left Ctrl + Alt to switch the language'],
       ['rows', 10],
-      ['cols', 50]);
+      ['cols', 50],
+    );
     this.container = createDomNode('div', 'keyboard', null, wrapper, ['lang', langCode]);
     document.body.prepend(wrapper);
     return this;
@@ -26,15 +31,15 @@ export default class Keyboard {
   generateLayout() {
     this.keyButtons = [];
     this.keyboardRows.forEach((row, i) => {
-      const rowItem = createDomNode('div', 'keyboard__row', null, this.container, ['row', i + 1])
-      row.forEach(code => {
-        const keyObject = this.keyBase.find(key => key.code === code);
+      const rowItem = createDomNode('div', 'keyboard__row', null, this.container, ['row', i + 1]);
+      row.forEach((code) => {
+        const keyObject = this.keyBase.find((key) => key.code === code);
         if (keyObject) {
           const keyButton = new Key(keyObject);
           this.keyButtons.push(keyButton);
           rowItem.append(keyButton.keyContainer);
         }
-      })
+      });
     });
     document.addEventListener('keydown', this.handleEvent);
     document.addEventListener('keyup', this.handleEvent);
@@ -49,18 +54,18 @@ export default class Keyboard {
     const { dataset: { code } } = keyDiv;
     keyDiv.addEventListener('mouseleave', this.resetButtonState);
     this.handleEvent({ code, type: event.type });
-  }
+  };
 
   resetButtonState = ({ target: { dataset: { code } } }) => {
-    const keyObject = this.keyButtons.find(key => key.code === code);
-    keyObject.keyContainer.classList.remove('active');
+    const keyObject = this.keyButtons.find((key) => key.code === code);
+    if (!this.isCaps) keyObject.keyContainer.classList.remove('active');
     keyObject.keyContainer.removeEventListener('mouseleave', this.resetButtonState);
-  }
+  };
 
   handleEvent = (event) => {
     if (event.stopPropagation) event.stopPropagation();
     const { code, type } = event;
-    const keyObject = this.keyButtons.find(key => key.code === code);
+    const keyObject = this.keyButtons.find((key) => key.code === code);
     if (!keyObject) return;
     this.display.focus();
     if (type.match(/keydown|mousedown/)) {
@@ -87,12 +92,13 @@ export default class Keyboard {
         this.printToDisplay(keyObject, this.shiftKey ? keyObject.shift : keyObject.key);
       } else if (this.isCaps) {
         if (this.shiftKey) {
-          this.printToDisplay(keyObject, keyObject.keyShift.innerHTML ? keyObject.shift : keyObject.key);
+          this.printToDisplay(keyObject, keyObject.keyShift.innerHTML
+            ? keyObject.shift : keyObject.key);
         } else {
-          this.printToDisplay(keyObject, !keyObject.keyShift.innerHTML ? keyObject.shift : keyObject.key);
+          this.printToDisplay(keyObject, !keyObject.keyShift.innerHTML
+            ? keyObject.shift : keyObject.key);
         }
       }
-
     } else if (type.match(/keyup|mouseup/)) {
       if (code.match(/Shift/)) {
         this.shiftKey = false;
@@ -102,7 +108,7 @@ export default class Keyboard {
       if (code.match(/Alt/)) this.altKey = false;
       if (!code.match(/Caps/)) keyObject.keyContainer.classList.remove('active');
     }
-  }
+  };
 
   changeLang = () => {
     const langs = Object.keys(lang);
@@ -111,25 +117,27 @@ export default class Keyboard {
       : lang[langs[langIndex -= langIndex]];
     this.container.dataset.lang = langs[langIndex];
     storage.set('lang', langs[langIndex]);
-    
-    this.keyButtons.forEach(item => {
-      const keyObject = this.keyBase.find(key => key.code === item.code);
+
+    this.keyButtons.forEach((item) => {
+      const button = item;
+      const keyObject = this.keyBase.find((key) => key.code === item.code);
       if (!keyObject) return;
-      item.shift = keyObject.shift;
-      item.key = keyObject.key;
+      button.shift = keyObject.shift;
+      button.key = keyObject.key;
       if (keyObject.shift && keyObject.shift.match(/[^0-9a-zA-Zа-яА-ЯёЁ]/g)) {
-        item.keyShift.innerHTML = keyObject.shift;
+        button.keyShift.innerHTML = keyObject.shift;
       } else {
-        item.keyShift.innerHTML = '';
+        button.keyShift.innerHTML = '';
       }
-      item.keyTitle.innerHTML = keyObject.key;
+      button.keyTitle.innerHTML = keyObject.key;
     });
     if (this.isCaps) this.switchUpperCase(true);
-  }
+  };
 
   switchUpperCase(isTrue) {
     if (isTrue) {
-      this.keyButtons.forEach(button => {
+      this.keyButtons.forEach((item) => {
+        const button = item;
         if (button.keyShift) {
           if (this.shiftKey) {
             button.keyShift.classList.add('key-shift_active');
@@ -145,14 +153,13 @@ export default class Keyboard {
         }
       });
     } else {
-      this.keyButtons.forEach(button => {
+      this.keyButtons.forEach((item) => {
+        const button = item;
         if (button.keyShift.innerHTML && !button.isFnKey) {
           button.keyShift.classList.remove('key-shift_active');
           button.keyTitle.classList.remove('key-shift_inactive');
           if (!this.isCaps) {
             button.keyTitle.innerHTML = button.key;
-          } else if (!this.isCaps) {
-            button.keyTitle.innerHTML = button.shift;
           }
         } else if (!button.isFnKey) {
           if (this.isCaps) {
@@ -203,8 +210,8 @@ export default class Keyboard {
       Space: () => {
         this.display.value = `${left} ${right}`;
         cursorPosition += 1;
-      }
-    }
+      },
+    };
 
     if (fnButtonsHandler[keyObject.code]) {
       fnButtonsHandler[keyObject.code]();

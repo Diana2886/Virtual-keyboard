@@ -5,7 +5,7 @@ export default function createDomNode(node, className, children, parent, ...data
     element.classList.add(...className.split(' '));
   }
   if (children && Array.isArray(children)) {
-    children.forEach(item => /* item && */ element.append(item));
+    children.forEach((item) => element.append(item));
   } else if (children && typeof children === 'object') {
     element.append(children);
   } else if (children && typeof children === 'string') {
@@ -15,7 +15,7 @@ export default function createDomNode(node, className, children, parent, ...data
     parent.append(element);
   }
   if (dataAttr.length) {
-    dataAttr.forEach(([ dataName, dataValue ]) => {
+    dataAttr.forEach(([dataName, dataValue]) => {
       if (dataValue === '') {
         element.setAttribute(dataName, '');
       } else if (dataName.match(/value|id|placeholder|cols|rows|autocorrect|spellcheck/)) {
