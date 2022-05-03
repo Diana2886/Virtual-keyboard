@@ -82,8 +82,17 @@ body {
   transition: 0.2s;
 }
 
+
 .key-shift {
   align-self: flex-start;
+  opacity: 0.3;
+}
+
+.key-shift.key-shift_active:not(:empty) {
+  opacity: 1;
+}
+
+.key-shift.key-shift_active:not(:empty) ~ .key-title.key-shift_inactive {
   opacity: 0.3;
 }
 
@@ -113,19 +122,4 @@ body {
 .active {
   background-color: rgba(138, 43, 226, 0.2);
   transform: scale(0.97);
-}
-
-.keyboard__key_activatable::after {
-  position: absolute;
-  content: '';
-  top: 6px;
-  right: 6px;
-  width: 8px;
-  height: 8px;
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 50%;
-}
-
-.keyboard__key_active::after {
-  background: #08ff00;
 }

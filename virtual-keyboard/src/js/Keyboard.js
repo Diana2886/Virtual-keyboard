@@ -38,10 +38,27 @@ export default class Keyboard {
     });
     document.addEventListener('keydown', this.handleEvent);
     document.addEventListener('keyup', this.handleEvent);
+    this.container.addEventListener('mousedown', this.preHandleEvent);
+    this.container.addEventListener('mouseup', this.preHandleEvent);
+  }
+
+  preHandleEvent = (event) => {
+    event.stopPropagation();
+    const keyDiv = event.target.closest('.keyboard__key');
+    if (!keyDiv) return;
+    const { dataset: { code } } = keyDiv;
+    keyDiv.addEventListener('mouseleave', this.resetButtonState);
+    this.handleEvent({ code, type: event.type });
+  }
+
+  resetButtonState = ({ target: { dataset: { code } } }) => {
+    const keyObject = this.keyButtons.find(key => key.code === code);
+    keyObject.keyContainer.classList.remove('active');
+    keyObject.keyContainer.removeEventListener('mouseleave', this.resetButtonState);
   }
 
   handleEvent = (event) => {
-    // if (event.stopPropagation) event.stopPropagation();
+    if (event.stopPropagation) event.stopPropagation();
     const { code, type } = event;
     const keyObject = this.keyButtons.find(key => key.code === code);
     if (!keyObject) return;
@@ -77,14 +94,12 @@ export default class Keyboard {
       }
 
     } else if (type.match(/keyup|mouseup/)) {
-      // keyObject.keyContainer.classList.remove('active');
       if (code.match(/Shift/)) {
         this.shiftKey = false;
         this.switchUpperCase(false);
       }
       if (code.match(/Control/)) this.ctrlKey = false;
       if (code.match(/Alt/)) this.altKey = false;
-
       if (!code.match(/Caps/)) keyObject.keyContainer.classList.remove('active');
     }
   }
