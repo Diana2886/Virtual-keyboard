@@ -189,12 +189,23 @@ export default class Keyboard {
         cursorPosition += 1;
       },
       ArrowUp: () => {
-        const positionFromLeft = this.display.value.slice(0, cursorPosition).match(/(\n).*$(?!\1)/g) || [[1]];
-        cursorPosition -= positionFromLeft[0].length;
+        const positionFromLeft = this.display.value.slice(0, cursorPosition).match(/(\n).*$/g) || [];
+        const lineBefore = this.display.value.slice(0, cursorPosition).match(/.*(\n).*$/g) || [];
+        if (lineBefore[0]) {
+          const pos = lineBefore[0].length - positionFromLeft[0].length;
+          cursorPosition -= (pos >= positionFromLeft[0].length
+            ? lineBefore[0].length - positionFromLeft[0].length + 1 : positionFromLeft[0].length);
+        }
       },
       ArrowDown: () => {
-        const positionFromLeft = this.display.value.slice(cursorPosition).match(/^.*(\n).*(?!\1)/) || [[1]];
-        cursorPosition += positionFromLeft[0].length;
+        const positionFromRight = this.display.value.slice(cursorPosition).match(/^.*(\n)/) || [];
+        const lineBefore = this.display.value.slice(0, cursorPosition).match(/.*$/) || [];
+        const nextLine = this.display.value.slice(cursorPosition).match(/(\n).*/) || [];
+        if (positionFromRight[0]) {
+          cursorPosition += (lineBefore[0].length <= nextLine[0].length - 1
+            ? positionFromRight[0].length + lineBefore[0].length
+            : positionFromRight[0].length + nextLine[0].length - 1);
+        }
       },
       Enter: () => {
         this.display.value = `${left}\n${right}`;
