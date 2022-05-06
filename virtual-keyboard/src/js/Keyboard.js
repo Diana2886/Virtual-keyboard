@@ -212,11 +212,27 @@ export default class Keyboard {
         cursorPosition += 1;
       },
       Delete: () => {
-        this.display.value = `${left}${right.slice(1)}`;
+        if (this.display.selectionEnd - this.display.selectionStart > 1) {
+          const selectionLength = this.display.value.slice(
+            this.display.selectionStart,
+            this.display.selectionEnd,
+          ).length;
+          this.display.value = `${left}${right.slice(selectionLength)}`;
+        } else {
+          this.display.value = `${left}${right.slice(1)}`;
+        }
       },
       Backspace: () => {
-        this.display.value = `${left.slice(0, -1)}${right}`;
-        cursorPosition -= 1;
+        if (this.display.selectionEnd - this.display.selectionStart > 1) {
+          const selectionLength = this.display.value.slice(
+            this.display.selectionStart,
+            this.display.selectionEnd,
+          ).length;
+          this.display.value = `${left}${right.slice(selectionLength)}`;
+        } else {
+          this.display.value = `${left.slice(0, -1)}${right}`;
+          cursorPosition -= 1;
+        }
       },
       Space: () => {
         this.display.value = `${left} ${right}`;
@@ -227,8 +243,17 @@ export default class Keyboard {
     if (fnButtonsHandler[keyObject.code]) {
       fnButtonsHandler[keyObject.code]();
     } else if (!keyObject.isFnKey) {
-      cursorPosition += 1;
-      this.display.value = `${left}${symbol || ''}${right}`;
+      if (this.display.selectionEnd - this.display.selectionStart > 1) {
+        const selectionLength = this.display.value.slice(
+          this.display.selectionStart,
+          this.display.selectionEnd,
+        ).length;
+        this.display.value = `${left}${symbol || ''}${right.slice(selectionLength)}`;
+        cursorPosition += 1;
+      } else {
+        cursorPosition += 1;
+        this.display.value = `${left}${symbol || ''}${right}`;
+      }
     }
     this.display.setSelectionRange(cursorPosition, cursorPosition);
   }

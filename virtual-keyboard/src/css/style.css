@@ -9,7 +9,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-width: 320px;
+  min-width: 500px;
   height: 100vh;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 18px;
@@ -22,7 +22,7 @@ body {
 .wrapper {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 50px;
+  padding: 30px;
 }
 
 .title {
@@ -122,4 +122,70 @@ body {
 .active {
   background-color: rgba(138, 43, 226, 0.2);
   transform: scale(0.97);
+}
+
+@media (max-width: 1024px) {
+  .wrapper {
+    padding: 30px 10px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .display {
+    width: 800px;
+  }
+
+  .keyboard {
+    width: 800px;
+    gap: 5px;
+  }
+
+  .keyboard__row {
+    gap: 5px;
+  }
+
+  .keyboard__key {
+    width: 40px;
+    padding: 3px;
+    font-size: 16px;
+  }
+
+  [data-fn="true"] > .key-title {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 820px) {
+  .wrapper {
+    padding: 30px 5px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .display {
+    width: 500px;
+  }
+
+  .keyboard {
+    width: 500px;
+    gap: 2px;
+  }
+
+  .keyboard__row {
+    gap: 2px;
+  }
+
+  .keyboard__key {
+    width: 26px;
+    padding: 2px;
+    font-size: 14px;
+  }
+
+  [data-fn="true"] > .key-title {
+    font-size: 12px;
+  }
 }
