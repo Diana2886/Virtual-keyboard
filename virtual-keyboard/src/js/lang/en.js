@@ -315,8 +315,8 @@ export default [
     code: 'ArrowRight',
   },
   {
-    key: 'Win',
+    key: 'En',
     shift: null,
-    code: 'Win',
+    code: 'Lang',
   },
 ];

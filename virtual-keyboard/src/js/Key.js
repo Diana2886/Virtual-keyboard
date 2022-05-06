@@ -5,7 +5,7 @@ export default class Key {
     this.key = key;
     this.shift = shift;
     this.code = code;
-    this.isFnKey = Boolean(key.match(/Tab|Caps|Shift|Ctrl|Alt|Enter|Back|Del|arr|Win/));
+    this.isFnKey = Boolean(key.match(/Tab|Caps|Shift|Ctrl|Alt|Enter|Back|Del|arr|En|Ru/));
 
     if (shift && shift.match(/[^0-9a-zA-Zа-яА-ЯёЁ]/)) {
       this.keyShift = createDomNode('div', 'key-shift', this.shift);

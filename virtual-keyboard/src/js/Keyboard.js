@@ -19,7 +19,7 @@ export default class Keyboard {
       'display',
       null,
       wrapper,
-      ['placeholder', 'Hello!\nThe keyboard was created in the Windows OS\nUse the left Ctrl + Alt to switch the language'],
+      ['placeholder', 'Hello!\nThe keyboard was created in the Windows OS\nUse the left Ctrl + Alt (or a special button) to switch the language'],
       ['rows', 10],
       ['cols', 50],
     );
@@ -237,6 +237,9 @@ export default class Keyboard {
       Space: () => {
         this.display.value = `${left} ${right}`;
         cursorPosition += 1;
+      },
+      Lang: () => {
+        this.changeLang();
       },
     };
 
