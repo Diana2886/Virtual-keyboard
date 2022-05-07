@@ -72,14 +72,14 @@ export default class Keyboard {
       if (type.match(/key/)) event.preventDefault();
       keyObject.keyContainer.classList.add('active');
       if (code.match(/Shift/)) this.shiftKey = true;
-      if (this.shiftKey) this.switchUpperCase(true);
+      if (this.shiftKey) this.switchToUpperCase(true);
       // Caps
       if (code.match(/Caps/) && !this.isCaps) {
         this.isCaps = true;
-        this.switchUpperCase(true);
+        this.switchToUpperCase(true);
       } else if (code.match(/Caps/) && this.isCaps) {
         this.isCaps = false;
-        this.switchUpperCase(false);
+        this.switchToUpperCase(false);
         keyObject.keyContainer.classList.remove('active');
       }
       // Change language
@@ -102,7 +102,7 @@ export default class Keyboard {
     } else if (type.match(/keyup|mouseup/)) {
       if (code.match(/Shift/)) {
         this.shiftKey = false;
-        this.switchUpperCase(false);
+        this.switchToUpperCase(false);
       }
       if (code.match(/Control/)) this.ctrlKey = false;
       if (code.match(/Alt/)) this.altKey = false;
@@ -131,10 +131,10 @@ export default class Keyboard {
       }
       button.keyTitle.innerHTML = keyObject.key;
     });
-    if (this.isCaps) this.switchUpperCase(true);
+    if (this.isCaps) this.switchToUpperCase(true);
   };
 
-  switchUpperCase(isTrue) {
+  switchToUpperCase(isTrue) {
     if (isTrue) {
       this.keyButtons.forEach((item) => {
         const button = item;
