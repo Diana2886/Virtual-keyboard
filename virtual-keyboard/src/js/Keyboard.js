@@ -20,7 +20,7 @@ export default class Keyboard {
       null,
       wrapper,
       ['placeholder', 'Hello!\nThe keyboard was created in the Windows OS\nUse the left Ctrl + Alt (or a special button) to switch the language'],
-      ['rows', 10],
+      ['rows', 12],
       ['cols', 50],
     );
     this.container = createDomNode('div', 'keyboard', null, wrapper, ['lang', langCode]);
@@ -73,7 +73,7 @@ export default class Keyboard {
       keyObject.keyContainer.classList.add('active');
       if (code.match(/Shift/)) this.shiftKey = true;
       if (this.shiftKey) this.switchToUpperCase(true);
-      // Caps
+
       if (code.match(/Caps/) && !this.isCaps) {
         this.isCaps = true;
         this.switchToUpperCase(true);
@@ -82,11 +82,12 @@ export default class Keyboard {
         this.switchToUpperCase(false);
         keyObject.keyContainer.classList.remove('active');
       }
-      // Change language
+      if (code.match(/Control|Alt|Caps/) && event.repeat) return;
+
       if (code.match(/Control/)) this.ctrlKey = true;
       if (code.match(/Alt/)) this.altKey = true;
-      if (code.match(/Control/) && this.altKey) this.changeLang();
-      if (code.match(/Alt/) && this.ctrlKey) this.changeLang();
+      if (code.match(/ControlLeft/) && this.altKey) this.changeLang();
+      if (code.match(/AltLeft/) && this.ctrlKey) this.changeLang();
 
       if (!this.isCaps) {
         this.printToDisplay(keyObject, this.shiftKey ? keyObject.shift : keyObject.key);
@@ -183,29 +184,20 @@ export default class Keyboard {
         cursorPosition += 1;
       },
       ArrowLeft: () => {
-        cursorPosition = cursorPosition - 1 >= 0 ? cursorPosition - 1 : 0;
+        this.display.value += '←';
+        cursorPosition += 1;
       },
       ArrowRight: () => {
+        this.display.value += '→';
         cursorPosition += 1;
       },
       ArrowUp: () => {
-        const positionFromLeft = this.display.value.slice(0, cursorPosition).match(/(\n).*$/g) || [];
-        const lineBefore = this.display.value.slice(0, cursorPosition).match(/.*(\n).*$/g) || [];
-        if (lineBefore[0]) {
-          const pos = lineBefore[0].length - positionFromLeft[0].length;
-          cursorPosition -= (pos >= positionFromLeft[0].length
-            ? lineBefore[0].length - positionFromLeft[0].length + 1 : positionFromLeft[0].length);
-        }
+        this.display.value += '↑';
+        cursorPosition += 1;
       },
       ArrowDown: () => {
-        const positionFromRight = this.display.value.slice(cursorPosition).match(/^.*(\n)/) || [];
-        const lineBefore = this.display.value.slice(0, cursorPosition).match(/.*$/) || [];
-        const nextLine = this.display.value.slice(cursorPosition).match(/(\n).*/) || [];
-        if (positionFromRight[0]) {
-          cursorPosition += (lineBefore[0].length <= nextLine[0].length - 1
-            ? positionFromRight[0].length + lineBefore[0].length
-            : positionFromRight[0].length + nextLine[0].length - 1);
-        }
+        this.display.value += '↓';
+        cursorPosition += 1;
       },
       Enter: () => {
         this.display.value = `${left}\n${right}`;
