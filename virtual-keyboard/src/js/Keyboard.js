@@ -184,20 +184,56 @@ export default class Keyboard {
         cursorPosition += 1;
       },
       ArrowLeft: () => {
-        this.display.value += '←';
-        cursorPosition += 1;
+        if (this.display.selectionEnd - this.display.selectionStart > 1) {
+          const selectionLength = this.display.value.slice(
+            this.display.selectionStart,
+            this.display.selectionEnd,
+          ).length;
+          this.display.value = `${left}←${right.slice(selectionLength)}`;
+          cursorPosition += 1;
+        } else {
+          cursorPosition += 1;
+          this.display.value = `${left}←${right}`;
+        }
       },
       ArrowRight: () => {
-        this.display.value += '→';
-        cursorPosition += 1;
+        if (this.display.selectionEnd - this.display.selectionStart > 1) {
+          const selectionLength = this.display.value.slice(
+            this.display.selectionStart,
+            this.display.selectionEnd,
+          ).length;
+          this.display.value = `${left}→${right.slice(selectionLength)}`;
+          cursorPosition += 1;
+        } else {
+          cursorPosition += 1;
+          this.display.value = `${left}→${right}`;
+        }
       },
       ArrowUp: () => {
-        this.display.value += '↑';
-        cursorPosition += 1;
+        if (this.display.selectionEnd - this.display.selectionStart > 1) {
+          const selectionLength = this.display.value.slice(
+            this.display.selectionStart,
+            this.display.selectionEnd,
+          ).length;
+          this.display.value = `${left}↑${right.slice(selectionLength)}`;
+          cursorPosition += 1;
+        } else {
+          cursorPosition += 1;
+          this.display.value = `${left}↑${right}`;
+        }
       },
       ArrowDown: () => {
-        this.display.value += '↓';
-        cursorPosition += 1;
+        if (this.display.selectionEnd - this.display.selectionStart > 1) {
+          const selectionLength = this.display.value.slice(
+            this.display.selectionStart,
+            this.display.selectionEnd,
+          ).length;
+          this.display.value = `${left}↓${right.slice(selectionLength)}`;
+          cursorPosition += 1;
+        } else {
+          cursorPosition += 1;
+          this.display.value = `${left}↓${right}`;
+        }
       },
       Enter: () => {
         this.display.value = `${left}\n${right}`;
