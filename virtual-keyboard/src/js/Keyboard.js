@@ -177,85 +177,72 @@ export default class Keyboard {
     let cursorPosition = this.display.selectionStart;
     const left = this.display.value.slice(0, cursorPosition);
     const right = this.display.value.slice(cursorPosition);
+    const selectionLength = this.display.selectionEnd - this.display.selectionStart;
 
     const fnButtonsHandler = {
       Tab: () => {
-        this.display.value = `${left}\t${right}`;
-        cursorPosition += 1;
+        if (selectionLength > 0) {
+          this.display.value = `${left}\t${right.slice(selectionLength)}`;
+          cursorPosition += 1;
+        } else {
+          this.display.value = `${left}\t${right}`;
+          cursorPosition += 1;
+        }
       },
       ArrowLeft: () => {
-        if (this.display.selectionEnd - this.display.selectionStart > 1) {
-          const selectionLength = this.display.value.slice(
-            this.display.selectionStart,
-            this.display.selectionEnd,
-          ).length;
+        if (selectionLength > 0) {
           this.display.value = `${left}←${right.slice(selectionLength)}`;
           cursorPosition += 1;
         } else {
-          cursorPosition += 1;
           this.display.value = `${left}←${right}`;
+          cursorPosition += 1;
         }
       },
       ArrowRight: () => {
-        if (this.display.selectionEnd - this.display.selectionStart > 1) {
-          const selectionLength = this.display.value.slice(
-            this.display.selectionStart,
-            this.display.selectionEnd,
-          ).length;
+        if (selectionLength > 0) {
           this.display.value = `${left}→${right.slice(selectionLength)}`;
           cursorPosition += 1;
         } else {
-          cursorPosition += 1;
           this.display.value = `${left}→${right}`;
+          cursorPosition += 1;
         }
       },
       ArrowUp: () => {
-        if (this.display.selectionEnd - this.display.selectionStart > 1) {
-          const selectionLength = this.display.value.slice(
-            this.display.selectionStart,
-            this.display.selectionEnd,
-          ).length;
+        if (selectionLength > 0) {
           this.display.value = `${left}↑${right.slice(selectionLength)}`;
           cursorPosition += 1;
         } else {
-          cursorPosition += 1;
           this.display.value = `${left}↑${right}`;
+          cursorPosition += 1;
         }
       },
       ArrowDown: () => {
-        if (this.display.selectionEnd - this.display.selectionStart > 1) {
-          const selectionLength = this.display.value.slice(
-            this.display.selectionStart,
-            this.display.selectionEnd,
-          ).length;
+        if (selectionLength > 0) {
           this.display.value = `${left}↓${right.slice(selectionLength)}`;
           cursorPosition += 1;
         } else {
-          cursorPosition += 1;
           this.display.value = `${left}↓${right}`;
+          cursorPosition += 1;
         }
       },
       Enter: () => {
-        this.display.value = `${left}\n${right}`;
-        cursorPosition += 1;
+        if (selectionLength > 0) {
+          this.display.value = `${left}\n${right.slice(selectionLength)}`;
+          cursorPosition += 1;
+        } else {
+          this.display.value = `${left}\n${right}`;
+          cursorPosition += 1;
+        }
       },
       Delete: () => {
-        if (this.display.selectionEnd - this.display.selectionStart > 1) {
-          const selectionLength = this.display.value.slice(
-            this.display.selectionStart,
-            this.display.selectionEnd,
-          ).length;
+        if (selectionLength > 0) {
           this.display.value = `${left}${right.slice(selectionLength)}`;
         } else {
           this.display.value = `${left}${right.slice(1)}`;
         }
       },
       Backspace: () => {
-        if (this.display.selectionEnd - this.display.selectionStart > 1) {
-          const selectionLength = this.display.value.slice(
-            this.display.selectionStart,
-            this.display.selectionEnd,
-          ).length;
+        if (selectionLength > 0) {
           this.display.value = `${left}${right.slice(selectionLength)}`;
         } else {
           this.display.value = `${left.slice(0, -1)}${right}`;
@@ -263,8 +250,13 @@ export default class Keyboard {
         }
       },
       Space: () => {
-        this.display.value = `${left} ${right}`;
-        cursorPosition += 1;
+        if (selectionLength > 0) {
+          this.display.value = `${left} ${right.slice(selectionLength)}`;
+          cursorPosition += 1;
+        } else {
+          this.display.value = `${left} ${right}`;
+          cursorPosition += 1;
+        }
       },
       Lang: () => {
         this.changeLang();
@@ -274,11 +266,7 @@ export default class Keyboard {
     if (fnButtonsHandler[keyObject.code]) {
       fnButtonsHandler[keyObject.code]();
     } else if (!keyObject.isFnKey) {
-      if (this.display.selectionEnd - this.display.selectionStart > 1) {
-        const selectionLength = this.display.value.slice(
-          this.display.selectionStart,
-          this.display.selectionEnd,
-        ).length;
+      if (selectionLength > 0) {
         this.display.value = `${left}${symbol || ''}${right.slice(selectionLength)}`;
         cursorPosition += 1;
       } else {
